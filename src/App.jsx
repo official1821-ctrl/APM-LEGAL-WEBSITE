@@ -43,7 +43,27 @@ const TEAM = [
   { name: "Vikram S. Rao", role: "Associate — Constitutional & Appellate", email: "vikram.rao@apmlegal.in", phone: "+91 522 400 1119", vcard: "#" },
 ];
 
-const initialBooking = { name: "", email: "", phone: "", matterType: "", opponent: "", jurisdiction: "", summary: "", slot: "" };
+const CONSULTATION_FEE = 2500;
+
+const initialBooking = {
+  name: "",
+  email: "",
+  phone: "",
+  matterType: "",
+  urgency: "",
+  consultationMode: "",
+  opponent: "",
+  issueType: "",
+  firNumber: "",
+  policeStation: "",
+  disputeValue: "",
+  challengedAuthority: "",
+  summary: "",
+  docsReady: "",
+  slot: "",
+  paymentMethod: "",
+  transactionRef: "",
+};
 
 function useMousePosition() {
   const [point, setPoint] = React.useState({ x: 0, y: 0 });
@@ -76,6 +96,7 @@ function App() {
 
   return (
     <div className="app-shell">
+      <CursorAura />
       <CustomCursor />
       <Hero onConsultClick={() => bookingRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })} />
 
@@ -94,6 +115,7 @@ function App() {
       <section ref={bookingRef} className="section">
         <div className="container narrow">
           <h2>Smart Appointment Booking Engine</h2>
+          <p className="subtle-copy">Precision intake with conditional legal questions and final consultation fee payment.</p>
           <BookingEngine />
         </div>
       </section>
@@ -206,20 +228,76 @@ function BookingEngine() {
 
   const steps = React.useMemo(() => {
     const queue = [
-      { key: "name", label: "What is your full name?", type: "text" },
-      { key: "email", label: "Your best email address?", type: "email" },
-      { key: "phone", label: "Phone number for urgent coordination?", type: "tel" },
-      { key: "matterType", label: "What kind of legal matter is this?", type: "select", options: ["Civil Litigation", "Consumer Dispute", "Constitutional", "Bail Application"] },
+      { key: "name", label: "What is your full name?", helper: "As per official ID for appointment records.", type: "text" },
+      { key: "email", label: "Your primary email address", helper: "All notices and payment receipt are shared here.", type: "email" },
+      { key: "phone", label: "Preferred phone number", helper: "For urgent legal coordination and case updates.", type: "tel" },
+      {
+        key: "matterType",
+        label: "Which legal matter best describes your case?",
+        helper: "Choose the closest area to route the right legal team.",
+        type: "select",
+        options: ["Civil Litigation", "Consumer Dispute", "Constitutional", "Bail Application"],
+      },
+      {
+        key: "urgency",
+        label: "How urgent is this matter?",
+        helper: "Helps us prioritize consultation slots.",
+        type: "select",
+        options: ["Immediate (within 24 hours)", "High (2-3 days)", "Standard (within a week)"],
+      },
+      {
+        key: "consultationMode",
+        label: "Consultation preference",
+        helper: "Select the mode most convenient for you.",
+        type: "select",
+        options: ["In-office (Lucknow)", "Video consultation", "Phone consultation"],
+      },
     ];
-    if (form.matterType === "Consumer Dispute") queue.push({ key: "opponent", label: "Which company is the dispute against?", type: "text" });
-    if (form.matterType === "Bail Application") queue.push({ key: "jurisdiction", label: "Relevant court or jurisdiction?", type: "text" });
-    queue.push({ key: "summary", label: "Briefly describe your matter.", type: "textarea" });
-    queue.push({ key: "slot", label: "Pick a preferred consultation slot.", type: "slot" });
+
+    if (form.matterType === "Consumer Dispute") {
+      queue.push({ key: "opponent", label: "Which company/business is involved?", helper: "Mention legal entity if known.", type: "text" });
+      queue.push({
+        key: "issueType",
+        label: "Primary consumer grievance",
+        helper: "Select the issue category.",
+        type: "select",
+        options: ["Defective product", "Deficiency of service", "Unfair trade practice", "Refund/compensation refusal"],
+      });
+    }
+
+    if (form.matterType === "Bail Application") {
+      queue.push({ key: "firNumber", label: "FIR number / case number", helper: "If available.", type: "text" });
+      queue.push({ key: "policeStation", label: "Police station / jurisdiction", helper: "City and station name preferred.", type: "text" });
+    }
+
+    if (form.matterType === "Civil Litigation") {
+      queue.push({
+        key: "disputeValue",
+        label: "Approximate claim/dispute value",
+        helper: "Example: ₹10 lakh, ₹50 lakh, etc.",
+        type: "text",
+      });
+    }
+
+    if (form.matterType === "Constitutional") {
+      queue.push({
+        key: "challengedAuthority",
+        label: "Authority/order being challenged",
+        helper: "Department, tribunal, or authority name.",
+        type: "text",
+      });
+    }
+
+    queue.push({ key: "summary", label: "Briefly summarize the case facts", helper: "2–5 lines are enough for first review.", type: "textarea" });
+    queue.push({ key: "docsReady", label: "Do you have key documents ready?", helper: "FIR, notices, agreements, emails, orders, etc.", type: "select", options: ["Yes", "Partially", "No"] });
+    queue.push({ key: "slot", label: "Select your preferred consultation slot", helper: "These are currently available windows.", type: "slot" });
+    queue.push({ key: "paymentMethod", label: `Consultation fee payment (₹${CONSULTATION_FEE.toLocaleString("en-IN")})`, helper: "Pay now to confirm your booking request.", type: "payment" });
+
     return queue;
   }, [form.matterType]);
 
   const current = steps[Math.min(step, steps.length - 1)];
-  const canContinue = Boolean(form[current.key]?.trim?.() || form[current.key]);
+  const canContinue = canProceed(current, form);
 
   return (
     <div className="booking-shell">
@@ -228,13 +306,15 @@ function BookingEngine() {
         <motion.div key={current.key} className="question-card" initial={{ opacity: 0, y: 16, filter: "blur(8px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} exit={{ opacity: 0, y: -8, filter: "blur(8px)" }}>
           <p className="step-count">Question {step + 1} of {steps.length}</p>
           <h3>{current.label}</h3>
-          <FieldRenderer step={current} value={form[current.key]} onChange={(v) => setForm((p) => ({ ...p, [current.key]: v }))} />
-          <div className="hero-actions">
+          <p className="question-helper">{current.helper}</p>
+          <FieldRenderer step={current} form={form} setForm={setForm} />
+
+          <div className="form-nav-row">
             <button className="ghost-btn" disabled={step === 0} onClick={() => setStep((s) => Math.max(0, s - 1))}>Back</button>
             {step < steps.length - 1 ? (
               <button className="cta-btn" disabled={!canContinue} onClick={() => setStep((s) => s + 1)}>Next</button>
             ) : (
-              <button className="cta-btn" disabled={!canContinue}>Request Consultation</button>
+              <button className="cta-btn glowing" disabled={!canContinue}>Confirm & Pay ₹{CONSULTATION_FEE.toLocaleString("en-IN")}</button>
             )}
           </div>
         </motion.div>
@@ -243,8 +323,18 @@ function BookingEngine() {
   );
 }
 
-function FieldRenderer({ step, value, onChange }) {
-  if (step.type === "textarea") return <textarea rows={4} value={value} onChange={(e) => onChange(e.target.value)} />;
+function canProceed(step, form) {
+  if (step.type === "payment") return Boolean(form.paymentMethod && form.transactionRef.trim());
+  if (step.type === "slot") return Boolean(form.slot);
+  return Boolean(form[step.key]?.trim?.() || form[step.key]);
+}
+
+function FieldRenderer({ step, form, setForm }) {
+  const value = form[step.key];
+  const onChange = (next) => setForm((prev) => ({ ...prev, [step.key]: next }));
+
+  if (step.type === "textarea") return <textarea rows={5} value={value} onChange={(e) => onChange(e.target.value)} />;
+
   if (step.type === "select") {
     return (
       <select value={value} onChange={(e) => onChange(e.target.value)}>
@@ -253,10 +343,40 @@ function FieldRenderer({ step, value, onChange }) {
       </select>
     );
   }
+
   if (step.type === "slot") {
-    const slots = ["Mon · 10:00 AM", "Tue · 1:30 PM", "Wed · 5:00 PM", "Fri · 11:15 AM"];
+    const slots = ["Mon · 10:00 AM", "Tue · 1:30 PM", "Wed · 5:00 PM", "Fri · 11:15 AM", "Sat · 12:30 PM"];
     return <div className="slot-grid">{slots.map((slot) => <button key={slot} className={`slot-btn ${value === slot ? "active" : ""}`} onClick={() => onChange(slot)}>{slot}</button>)}</div>;
   }
+
+  if (step.type === "payment") {
+    return (
+      <div className="payment-block">
+        <div className="payment-method-grid">
+          {["UPI", "Card", "Net Banking"].map((method) => (
+            <button
+              key={method}
+              className={`payment-method ${form.paymentMethod === method ? "active" : ""}`}
+              onClick={() => setForm((prev) => ({ ...prev, paymentMethod: method }))}
+            >
+              {method}
+            </button>
+          ))}
+        </div>
+        <label className="input-label">
+          Transaction reference / UTR number
+          <input
+            type="text"
+            placeholder="Enter payment reference"
+            value={form.transactionRef}
+            onChange={(e) => setForm((prev) => ({ ...prev, transactionRef: e.target.value }))}
+          />
+        </label>
+        <p className="question-helper">Booking is confirmed after fee verification by our intake desk.</p>
+      </div>
+    );
+  }
+
   return <input type={step.type} value={value} onChange={(e) => onChange(e.target.value)} />;
 }
 
@@ -274,9 +394,14 @@ function TeamCard({ member, spotlight }) {
   );
 }
 
+function CursorAura() {
+  const point = useMousePosition();
+  return <div className="cursor-aura" style={{ transform: `translate(${point.x - 260}px, ${point.y - 260}px)` }} />;
+}
+
 function CustomCursor() {
   const point = useMousePosition();
-  const [trail, setTrail] = React.useState(Array.from({ length: 8 }, () => ({ x: 0, y: 0 })));
+  const [trail, setTrail] = React.useState(Array.from({ length: 9 }, () => ({ x: 0, y: 0 })));
 
   React.useEffect(() => {
     let frame = 0;
@@ -286,8 +411,8 @@ function CustomCursor() {
         next[0] = { x: point.x, y: point.y };
         for (let i = 1; i < next.length; i += 1) {
           next[i] = {
-            x: next[i].x + (next[i - 1].x - next[i].x) * 0.35,
-            y: next[i].y + (next[i - 1].y - next[i].y) * 0.35,
+            x: next[i].x + (next[i - 1].x - next[i].x) * 0.34,
+            y: next[i].y + (next[i - 1].y - next[i].y) * 0.34,
           };
         }
         return next;
@@ -304,7 +429,7 @@ function CustomCursor() {
         <span
           key={`trail-${idx}`}
           className="cursor-trail"
-          style={{ transform: `translate(${dot.x - 4}px, ${dot.y - 4}px) scale(${1 - idx * 0.09})`, opacity: 1 - idx * 0.11 }}
+          style={{ transform: `translate(${dot.x - 4}px, ${dot.y - 4}px) scale(${1 - idx * 0.085})`, opacity: 1 - idx * 0.1 }}
         />
       ))}
       <span className="custom-cursor" style={{ transform: `translate(${point.x - 14}px, ${point.y - 14}px)` }} />

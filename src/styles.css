@@ -14,9 +14,9 @@ body {
   color: var(--text);
 }
 
-.app-shell { cursor: none; overflow-x: hidden; }
+.app-shell { cursor: none; overflow-x: hidden; position: relative; }
 .container { width: min(1140px, 92vw); margin: 0 auto; }
-.container.narrow { width: min(760px, 92vw); }
+.container.narrow { width: min(820px, 92vw); }
 .section { padding: 5rem 0; }
 h2 { font-size: clamp(1.9rem, 2.8vw, 2.75rem); margin: 0; letter-spacing: -0.02em; }
 .subtle-copy { color: var(--muted); margin: .7rem 0 1.4rem; }
@@ -99,24 +99,52 @@ h2 { font-size: clamp(1.9rem, 2.8vw, 2.75rem); margin: 0; letter-spacing: -0.02e
 .booking-shell {
   border: 1px solid rgba(255,255,255,.14);
   border-radius: 24px;
-  padding: 1.3rem;
-  background: linear-gradient(145deg, rgba(14,17,24,.95), rgba(14,17,24,.6));
+  padding: 1.4rem;
+  background: linear-gradient(145deg, rgba(14,17,24,.96), rgba(14,17,24,.66));
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.04), 0 24px 60px rgba(0,0,0,.36);
 }
-.progress-rail { height: 6px; border-radius: 999px; background: rgba(255,255,255,.08); overflow: hidden; }
+.progress-rail { height: 6px; border-radius: 999px; background: rgba(255,255,255,.08); overflow: hidden; margin-bottom: 1rem; }
 .progress-rail span { display: block; height: 100%; background: linear-gradient(90deg, #f6e5bf, var(--gold)); }
-.step-count { color: var(--muted); font-size: .86rem; margin: 1rem 0 .1rem; }
-.question-card h3 { margin: .4rem 0 1rem; }
+.question-card { display: grid; gap: .75rem; }
+.step-count { color: var(--muted); font-size: .86rem; margin: 0; }
+.question-card h3 { margin: 0; font-size: clamp(1.25rem, 2.2vw, 1.8rem); line-height: 1.25; }
+.question-helper { margin: 0 0 .25rem; color: #b2b8c4; font-size: .92rem; }
 input, textarea, select {
   width: 100%;
   border-radius: 12px;
   border: 1px solid rgba(255,255,255,.15);
   background: rgba(255,255,255,.03);
   color: var(--text);
-  padding: .85rem;
+  padding: .95rem 1rem;
+  font-size: .96rem;
+  outline: none;
 }
+input:focus, textarea:focus, select:focus { border-color: rgba(211,176,116,.6); box-shadow: 0 0 0 3px rgba(211,176,116,.13); }
+textarea { resize: vertical; min-height: 120px; }
+.form-nav-row { display: flex; justify-content: center; gap: .8rem; margin-top: .8rem; }
+
 .slot-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .7rem; }
-.slot-btn { border-radius: 12px; border: 1px solid rgba(255,255,255,.2); background: rgba(255,255,255,.03); color: var(--text); padding: .7rem; }
+.slot-btn {
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.2);
+  background: rgba(255,255,255,.03);
+  color: var(--text);
+  padding: .85rem .7rem;
+  text-align: center;
+}
 .slot-btn.active { border-color: var(--gold); box-shadow: 0 0 0 1px rgba(211,176,116,.6); }
+
+.payment-block { display: grid; gap: .8rem; }
+.payment-method-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .6rem; }
+.payment-method {
+  border: 1px solid rgba(255,255,255,.18);
+  background: rgba(255,255,255,.03);
+  color: var(--text);
+  padding: .75rem;
+  border-radius: 12px;
+}
+.payment-method.active { border-color: rgba(211,176,116,.8); background: rgba(211,176,116,.14); }
+.input-label { display: grid; gap: .45rem; color: #d9dde5; font-size: .9rem; }
 
 .roster-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
 .team-card {
@@ -155,6 +183,17 @@ input, textarea, select {
 .practice-modal { max-width: 620px; border-radius: 20px; border: 1px solid rgba(255,255,255,.15); background: #121621; padding: 1.4rem; }
 .modal-kicker { text-transform: uppercase; letter-spacing: .11em; color: var(--gold); font-size: .78rem; }
 
+.cursor-aura {
+  position: fixed;
+  width: 520px;
+  height: 520px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+  background: radial-gradient(circle, rgba(214,178,108,.18) 0%, rgba(214,178,108,.08) 28%, rgba(214,178,108,.02) 55%, transparent 76%);
+  filter: blur(22px);
+  mix-blend-mode: screen;
+}
 .custom-cursor {
   width: 28px;
   height: 28px;
@@ -177,7 +216,8 @@ input, textarea, select {
 
 @media (max-width: 860px) {
   .app-shell { cursor: auto; }
-  .custom-cursor, .cursor-trail { display: none; }
+  .custom-cursor, .cursor-trail, .cursor-aura { display: none; }
   .team-card.spotlight { grid-column: auto; }
   .location-hub { grid-template-columns: 1fr; }
+  .slot-grid, .payment-method-grid { grid-template-columns: 1fr; }
 }
