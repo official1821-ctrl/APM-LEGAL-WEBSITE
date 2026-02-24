@@ -60,6 +60,20 @@ export default function App() {
     return () => window.removeEventListener("hashchange", onHash);
   }, []);
 
+  const closePractice = React.useCallback(() => {
+    window.history.pushState("", document.title, window.location.pathname + window.location.search);
+    setActivePractice(null);
+  }, []);
+
+  React.useEffect(() => {
+    if (!activePractice) return;
+    const onEsc = (event) => {
+      if (event.key === "Escape") closePractice();
+    };
+    window.addEventListener("keydown", onEsc);
+    return () => window.removeEventListener("keydown", onEsc);
+  }, [activePractice, closePractice]);
+
   return (
     <div className="app-shell">
       <CursorAura />
@@ -99,11 +113,24 @@ export default function App() {
 
       <AnimatePresence>
         {activePractice && (
-          <motion.div className="practice-modal-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <motion.article className="practice-modal" initial={{ y: 24, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 24, opacity: 0 }}>
+          <motion.div
+            className="practice-modal-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={closePractice}
+          >
+            <motion.article
+              className="practice-modal"
+              initial={{ y: 24, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 24, opacity: 0 }}
+              onClick={(event) => event.stopPropagation()}
+            >
               <p className="modal-kicker">Dedicated Expertise Page</p>
               <h3>{activePractice.title}</h3>
               <p>{activePractice.detail}</p>
+              <button className="ghost-btn modal-close" onClick={closePractice}>Close</button>
             </motion.article>
           </motion.div>
         )}

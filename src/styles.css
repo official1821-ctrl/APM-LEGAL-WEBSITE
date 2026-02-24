@@ -144,7 +144,12 @@ input, textarea, select {
   padding: .95rem 1rem;
   font-size: .96rem;
 }
+
 input:focus, textarea:focus, select:focus { outline: none; border-color: rgba(215,178,115,.7); box-shadow: 0 0 0 3px rgba(215,178,115,.15); }
+select option {
+  color: #0d1322;
+  background: #f4f6fb;
+}
 
 .form-nav-row { display: flex; justify-content: center; gap: .8rem; margin-top: .65rem; }
 .slot-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .7rem; }
@@ -191,6 +196,7 @@ input:focus, textarea:focus, select:focus { outline: none; border-color: rgba(21
 .practice-modal-backdrop { position: fixed; inset: 0; z-index: 50; background: rgba(0,0,0,.72); display: grid; place-items: center; padding: 1rem; }
 .practice-modal { max-width: 620px; border-radius: 20px; border: 1px solid rgba(255,255,255,.2); padding: 1.35rem; background: linear-gradient(140deg, rgba(12,17,29,.95), rgba(12,17,29,.75)); }
 .modal-kicker { margin: 0; text-transform: uppercase; letter-spacing: .12em; color: var(--gold); font-size: .76rem; }
+.modal-close { margin-top: .9rem; }
 
 .cursor-aura {
   position: fixed;
