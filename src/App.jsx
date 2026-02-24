@@ -5,78 +5,45 @@ const PRACTICE_AREAS = [
   {
     id: "civil-litigation",
     title: "Civil Litigation",
-    short: "Aggressive courtroom strategy for complex disputes and injunctions.",
+    short: "Decisive courtroom strategy for injunctions, recovery and high-value disputes.",
     detail:
-      "We handle injunctions, recovery suits, property and contract conflicts with fast tactical filings and trial-ready briefs.",
+      "From interim relief to trial execution, we structure pleadings and evidence with pressure-tested litigation playbooks.",
     slug: "corporate-fraud-civil-disputes",
   },
   {
     id: "consumer-advocacy",
     title: "Consumer Advocacy",
-    short: "Action against deceptive marketing, unfair trade practices, and service failures.",
+    short: "Remedies for deceptive marketing, unfair terms, and service negligence.",
     detail:
-      "From misleading campaigns to defective services, we build evidence-led complaints and seek compensation before commissions and courts.",
+      "We prosecute non-compliance by large brands through evidence-first complaints, compensation strategy, and hard negotiation.",
     slug: "deceptive-marketing-consumer-disputes",
   },
   {
     id: "constitutional-law",
     title: "Constitutional Law",
-    short: "Writ jurisdiction, rights protection, and policy challenge litigation.",
+    short: "Targeted writ actions to challenge arbitrary state action and rights violations.",
     detail:
-      "We pursue writ remedies, challenge arbitrary state action, and protect civil liberties through focused constitutional strategy.",
+      "Our constitutional team builds focused records and sharp pleadings for time-sensitive interventions before higher courts.",
     slug: "writs-rights-policy-challenges",
   },
   {
     id: "bail-applications",
     title: "Bail Applications",
-    short: "Urgent anticipatory and regular bail representation with jurisdiction-first precision.",
+    short: "Urgent bail defence with fast filings and jurisdiction-smart argument design.",
     detail:
-      "High-pressure bail and custody matters managed with immediate drafting, risk mapping, and courtroom execution.",
+      "From anticipatory relief to regular bail, we move quickly with custody-risk analysis and persuasive oral strategy.",
     slug: "urgent-bail-and-custody-defence",
   },
 ];
 
 const TEAM = [
-  {
-    name: "A.P. Mishra",
-    role: "Senior Advocate",
-    email: "apmishra@apmlegal.in",
-    phone: "+91 522 400 1101",
-    vcard: "#",
-  },
-  {
-    name: "Aaditya Mishra",
-    role: "Managing Partner",
-    email: "aaditya@apmlegal.in",
-    phone: "+91 522 400 1102",
-    vcard: "#",
-  },
-  {
-    name: "Rhea Kapoor",
-    role: "Associate — Consumer & Commercial",
-    email: "rhea.k@apmlegal.in",
-    phone: "+91 522 400 1112",
-    vcard: "#",
-  },
-  {
-    name: "Vikram S. Rao",
-    role: "Associate — Constitutional & Appellate",
-    email: "vikram.rao@apmlegal.in",
-    phone: "+91 522 400 1119",
-    vcard: "#",
-  },
+  { name: "A.P. Mishra", role: "Senior Advocate", email: "apmishra@apmlegal.in", phone: "+91 522 400 1101", vcard: "#" },
+  { name: "Aaditya Mishra", role: "Managing Partner", email: "aaditya@apmlegal.in", phone: "+91 522 400 1102", vcard: "#" },
+  { name: "Rhea Kapoor", role: "Associate — Consumer & Commercial", email: "rhea.k@apmlegal.in", phone: "+91 522 400 1112", vcard: "#" },
+  { name: "Vikram S. Rao", role: "Associate — Constitutional & Appellate", email: "vikram.rao@apmlegal.in", phone: "+91 522 400 1119", vcard: "#" },
 ];
 
-const initialBooking = {
-  name: "",
-  email: "",
-  phone: "",
-  matterType: "",
-  opponent: "",
-  jurisdiction: "",
-  summary: "",
-  slot: "",
-};
+const initialBooking = { name: "", email: "", phone: "", matterType: "", opponent: "", jurisdiction: "", summary: "", slot: "" };
 
 function useMousePosition() {
   const [point, setPoint] = React.useState({ x: 0, y: 0 });
@@ -102,44 +69,36 @@ function App() {
     return () => window.removeEventListener("hashchange", onHash);
   }, []);
 
-  const openPractice = (practice) => {
-    window.location.hash = `practice/${practice.slug}`;
-  };
-
   const closePractice = () => {
     window.history.pushState("", document.title, window.location.pathname + window.location.search);
     setActivePractice(null);
   };
 
-  const scrollToBooking = () => {
-    bookingRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
-
   return (
     <div className="app-shell">
       <CustomCursor />
-      <Hero onConsultClick={scrollToBooking} />
+      <Hero onConsultClick={() => bookingRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })} />
 
-      <section className="section section-practice" id="practice-areas">
+      <section className="section">
         <div className="container">
-          <h2>Dynamic Practice Areas</h2>
-          <p className="subtle-copy">Hover to illuminate and click to open a focused expertise page.</p>
+          <h2>Practice Areas</h2>
+          <p className="subtle-copy">Glass panels respond to your pointer and open dedicated expertise views.</p>
           <div className="practice-grid">
             {PRACTICE_AREAS.map((area) => (
-              <PracticeCard key={area.id} area={area} onOpen={openPractice} />
+              <PracticeCard key={area.id} area={area} onOpen={() => (window.location.hash = `practice/${area.slug}`)} />
             ))}
           </div>
         </div>
       </section>
 
-      <section ref={bookingRef} className="section section-booking" id="booking-engine">
+      <section ref={bookingRef} className="section">
         <div className="container narrow">
           <h2>Smart Appointment Booking Engine</h2>
           <BookingEngine />
         </div>
       </section>
 
-      <section className="section section-roster" id="roster-location">
+      <section className="section">
         <div className="container">
           <h2>Roster & Location</h2>
           <div className="roster-grid">
@@ -159,9 +118,7 @@ function App() {
               <h3>Lucknow Office</h3>
               <p>APM Legal Services LLP, Near High Court, Qaiserbagh, Lucknow, Uttar Pradesh 226001</p>
               <p>Mon–Sat · 9:30 AM – 8:00 PM</p>
-              <a className="ghost-btn" href="https://maps.google.com/?q=Lucknow%20High%20Court" target="_blank" rel="noreferrer">
-                Get Directions
-              </a>
+              <a className="ghost-btn" href="https://maps.google.com/?q=Lucknow%20High%20Court" target="_blank" rel="noreferrer">Get Directions</a>
             </div>
           </div>
         </div>
@@ -170,19 +127,13 @@ function App() {
       <AnimatePresence>
         {activePractice && (
           <motion.div className="practice-modal-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <motion.article
-              className="practice-modal"
-              initial={{ y: 30, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: 30, opacity: 0 }}
-              transition={{ type: "spring", stiffness: 140, damping: 20 }}
-            >
+            <motion.article className="practice-modal" initial={{ y: 28, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 28, opacity: 0 }}>
               <p className="modal-kicker">Dedicated Expertise Page</p>
               <h3>{activePractice.title}</h3>
               <p>{activePractice.detail}</p>
               <div className="hero-actions">
                 <button className="cta-btn" onClick={closePractice}>Close</button>
-                <button className="ghost-btn" onClick={scrollToBooking}>Book consultation</button>
+                <button className="ghost-btn" onClick={() => bookingRef.current?.scrollIntoView({ behavior: "smooth" })}>Book consultation</button>
               </div>
             </motion.article>
           </motion.div>
@@ -198,25 +149,24 @@ function Hero({ onConsultClick }) {
 
   return (
     <header className="hero">
-      <div className="hero-noise" />
+      <div className="hero-backglow" style={{ transform: `translate(${(mouse.x - window.innerWidth / 2) * 0.015}px, ${(mouse.y - window.innerHeight / 2) * 0.015}px)` }} />
       <motion.h1
         className="hero-title"
         onMouseEnter={() => setHovering(true)}
         onMouseLeave={() => setHovering(false)}
         style={
           hovering
-            ? {
-                backgroundImage: `radial-gradient(circle at ${mouse.x}px ${mouse.y}px, rgba(255,255,255,0.9), rgba(200,160,77,0.95) 20%, rgba(238,238,238,0.15) 40%, rgba(255,255,255,0.05) 75%)`,
-              }
+            ? { backgroundImage: `radial-gradient(circle at ${mouse.x}px ${mouse.y}px, #fff 0%, #e6cf9d 28%, rgba(255,255,255,.2) 52%, rgba(255,255,255,.05) 80%)` }
             : undefined
         }
       >
         APM LEGAL SERVICES LLP
       </motion.h1>
       <p className="hero-tagline">Strategic Advocacy. Relentless Pursuit of Justice.</p>
-      <button className="cta-btn glowing" onClick={onConsultClick}>
-        Consult With Us
-      </button>
+      <div className="hero-actions">
+        <button className="cta-btn glowing" onClick={onConsultClick}>Consult With Us</button>
+        <span className="status-pill">Counseling • Litigation • Defence</span>
+      </div>
     </header>
   );
 }
@@ -227,13 +177,9 @@ function PracticeCard({ area, onOpen }) {
   const onMove = (e) => {
     const rect = cardRef.current?.getBoundingClientRect();
     if (!rect) return;
-    const x = (e.clientX - rect.left - rect.width / 2) / 18;
-    const y = (e.clientY - rect.top - rect.height / 2) / 18;
-    cardRef.current.style.transform = `rotateX(${-y}deg) rotateY(${x}deg) translateY(-4px)`;
-  };
-
-  const reset = () => {
-    if (cardRef.current) cardRef.current.style.transform = "rotateX(0deg) rotateY(0deg) translateY(0)";
+    const x = (e.clientX - rect.left - rect.width / 2) / 16;
+    const y = (e.clientY - rect.top - rect.height / 2) / 16;
+    cardRef.current.style.transform = `rotateX(${-y}deg) rotateY(${x}deg) translateY(-6px)`;
   };
 
   return (
@@ -241,11 +187,11 @@ function PracticeCard({ area, onOpen }) {
       className="practice-card"
       ref={cardRef}
       onMouseMove={onMove}
-      onMouseLeave={reset}
-      onClick={() => onOpen(area)}
+      onMouseLeave={() => cardRef.current && (cardRef.current.style.transform = "rotateX(0deg) rotateY(0deg)")}
+      onClick={onOpen}
       role="button"
       tabIndex={0}
-      onKeyDown={(e) => e.key === "Enter" && onOpen(area)}
+      onKeyDown={(e) => e.key === "Enter" && onOpen()}
     >
       <h3>{area.title}</h3>
       <p>{area.short}</p>
@@ -263,68 +209,34 @@ function BookingEngine() {
       { key: "name", label: "What is your full name?", type: "text" },
       { key: "email", label: "Your best email address?", type: "email" },
       { key: "phone", label: "Phone number for urgent coordination?", type: "tel" },
-      {
-        key: "matterType",
-        label: "What kind of legal matter is this?",
-        type: "select",
-        options: ["Civil Litigation", "Consumer Dispute", "Constitutional", "Bail Application"],
-      },
+      { key: "matterType", label: "What kind of legal matter is this?", type: "select", options: ["Civil Litigation", "Consumer Dispute", "Constitutional", "Bail Application"] },
     ];
-
-    if (form.matterType === "Consumer Dispute") {
-      queue.push({ key: "opponent", label: "Which company is the dispute against?", type: "text" });
-    }
-
-    if (form.matterType === "Bail Application") {
-      queue.push({ key: "jurisdiction", label: "Relevant court or jurisdiction?", type: "text" });
-    }
-
+    if (form.matterType === "Consumer Dispute") queue.push({ key: "opponent", label: "Which company is the dispute against?", type: "text" });
+    if (form.matterType === "Bail Application") queue.push({ key: "jurisdiction", label: "Relevant court or jurisdiction?", type: "text" });
     queue.push({ key: "summary", label: "Briefly describe your matter.", type: "textarea" });
     queue.push({ key: "slot", label: "Pick a preferred consultation slot.", type: "slot" });
-
     return queue;
   }, [form.matterType]);
 
-  React.useEffect(() => {
-    if (step >= steps.length) setStep(steps.length - 1);
-  }, [step, steps.length]);
-
-  const current = steps[step];
-  const canContinue = form[current.key]?.trim?.() || form[current.key];
-
-  const setValue = (key, value) => setForm((prev) => ({ ...prev, [key]: value }));
+  const current = steps[Math.min(step, steps.length - 1)];
+  const canContinue = Boolean(form[current.key]?.trim?.() || form[current.key]);
 
   return (
     <div className="booking-shell">
-      <div className="progress-rail">
-        <span style={{ width: `${((step + 1) / steps.length) * 100}%` }} />
-      </div>
+      <div className="progress-rail"><span style={{ width: `${((step + 1) / steps.length) * 100}%` }} /></div>
       <AnimatePresence mode="wait">
-        <motion.div
-          key={current.key}
-          initial={{ opacity: 0, y: 14, filter: "blur(8px)" }}
-          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-          exit={{ opacity: 0, y: -8, filter: "blur(8px)" }}
-          transition={{ duration: 0.3 }}
-          className="question-card"
-        >
+        <motion.div key={current.key} className="question-card" initial={{ opacity: 0, y: 16, filter: "blur(8px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} exit={{ opacity: 0, y: -8, filter: "blur(8px)" }}>
           <p className="step-count">Question {step + 1} of {steps.length}</p>
           <h3>{current.label}</h3>
-          <FieldRenderer step={current} value={form[current.key]} onChange={(v) => setValue(current.key, v)} />
-
+          <FieldRenderer step={current} value={form[current.key]} onChange={(v) => setForm((p) => ({ ...p, [current.key]: v }))} />
           <div className="hero-actions">
-            <button className="ghost-btn" disabled={step === 0} onClick={() => setStep((s) => Math.max(0, s - 1))}>
-              Back
-            </button>
+            <button className="ghost-btn" disabled={step === 0} onClick={() => setStep((s) => Math.max(0, s - 1))}>Back</button>
             {step < steps.length - 1 ? (
-              <button className="cta-btn" disabled={!canContinue} onClick={() => setStep((s) => s + 1)}>
-                Next
-              </button>
+              <button className="cta-btn" disabled={!canContinue} onClick={() => setStep((s) => s + 1)}>Next</button>
             ) : (
               <button className="cta-btn" disabled={!canContinue}>Request Consultation</button>
             )}
           </div>
-          <p className="subtle-copy small">Final step aligns with calendar availability for preliminary consultation scheduling.</p>
         </motion.div>
       </AnimatePresence>
     </div>
@@ -337,41 +249,22 @@ function FieldRenderer({ step, value, onChange }) {
     return (
       <select value={value} onChange={(e) => onChange(e.target.value)}>
         <option value="">Select one</option>
-        {step.options.map((opt) => (
-          <option key={opt}>{opt}</option>
-        ))}
+        {step.options.map((opt) => <option key={opt}>{opt}</option>)}
       </select>
     );
   }
   if (step.type === "slot") {
     const slots = ["Mon · 10:00 AM", "Tue · 1:30 PM", "Wed · 5:00 PM", "Fri · 11:15 AM"];
-    return (
-      <div className="slot-grid">
-        {slots.map((slot) => (
-          <button key={slot} className={`slot-btn ${value === slot ? "active" : ""}`} onClick={() => onChange(slot)}>
-            {slot}
-          </button>
-        ))}
-      </div>
-    );
+    return <div className="slot-grid">{slots.map((slot) => <button key={slot} className={`slot-btn ${value === slot ? "active" : ""}`} onClick={() => onChange(slot)}>{slot}</button>)}</div>;
   }
-
   return <input type={step.type} value={value} onChange={(e) => onChange(e.target.value)} />;
 }
 
 function TeamCard({ member, spotlight }) {
   return (
     <article className={`team-card ${spotlight ? "spotlight" : ""}`}>
-      <div className="portrait" aria-hidden="true">
-        {member.name
-          .split(" ")
-          .map((n) => n[0])
-          .join("")}
-      </div>
-      <div className="team-meta">
-        <h3>{member.name}</h3>
-        <p>{member.role}</p>
-      </div>
+      <div className="portrait" aria-hidden="true">{member.name.split(" ").map((n) => n[0]).join("")}</div>
+      <div className="team-meta"><h3>{member.name}</h3><p>{member.role}</p></div>
       <div className="team-reveal">
         <a href={`mailto:${member.email}`}>{member.email}</a>
         <a href={`tel:${member.phone.replace(/\s/g, "")}`}>{member.phone}</a>
@@ -383,7 +276,40 @@ function TeamCard({ member, spotlight }) {
 
 function CustomCursor() {
   const point = useMousePosition();
-  return <div className="custom-cursor" style={{ transform: `translate(${point.x - 12}px, ${point.y - 12}px)` }} />;
+  const [trail, setTrail] = React.useState(Array.from({ length: 8 }, () => ({ x: 0, y: 0 })));
+
+  React.useEffect(() => {
+    let frame = 0;
+    const animate = () => {
+      setTrail((prev) => {
+        const next = [...prev];
+        next[0] = { x: point.x, y: point.y };
+        for (let i = 1; i < next.length; i += 1) {
+          next[i] = {
+            x: next[i].x + (next[i - 1].x - next[i].x) * 0.35,
+            y: next[i].y + (next[i - 1].y - next[i].y) * 0.35,
+          };
+        }
+        return next;
+      });
+      frame = requestAnimationFrame(animate);
+    };
+    frame = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(frame);
+  }, [point]);
+
+  return (
+    <>
+      {trail.map((dot, idx) => (
+        <span
+          key={`trail-${idx}`}
+          className="cursor-trail"
+          style={{ transform: `translate(${dot.x - 4}px, ${dot.y - 4}px) scale(${1 - idx * 0.09})`, opacity: 1 - idx * 0.11 }}
+        />
+      ))}
+      <span className="custom-cursor" style={{ transform: `translate(${point.x - 14}px, ${point.y - 14}px)` }} />
+    </>
+  );
 }
 
 export default App;
