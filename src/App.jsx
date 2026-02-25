@@ -1,16 +1,9 @@
 import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
-const NAV_ITEMS = ["About Us", "Services", "People", "Awards", "Insights", "Careers", "Contact Us"];
+const NAV_ITEMS = ["About Us", "Services", "People", "Insights", "Careers", "Contact Us"];
 const WHATSAPP_NUMBER = "918553332320";
 const CONSULTATION_FEE = 2500;
-
-const AWARDS = [
-  { title: "Chambers & Partners 2026", note: "Top-tier recognition across core practices." },
-  { title: "IBLJ India Law Firm Awards 2025", note: "Awarded for strategic dispute outcomes." },
-  { title: "Legal 500 Asia Pacific 2026", note: "Highly ranked for litigation and advisory." },
-  { title: "Benchmark Litigation APAC 2025", note: "Recognised litigation leadership in India." },
-];
 
 const PRACTICE_AREAS = [
   { id: "civil-litigation", title: "Civil Litigation", short: "Strategic injunctions, recovery and high-value disputes.", detail: "Trial-ready pleadings, aggressive interim strategy and focused courtroom execution.", slug: "corporate-fraud-civil-disputes" },
@@ -81,24 +74,17 @@ export default function App() {
       <TopNav />
       <Hero onConsultClick={() => bookingRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })} />
 
-      <section className="section trust">
-        <div className="container">
-          <h2>Awards & Recognition</h2>
-          <div className="award-grid">{AWARDS.map((a) => <article key={a.title} className="award-card"><h3>{a.title}</h3><p>{a.note}</p></article>)}</div>
-        </div>
-      </section>
-
       <section className="section">
         <div className="container">
-          <h2>Practice Areas</h2>
-          <p className="subtle-copy">Specialist teams for high-stakes litigation, rights, and criminal defence.</p>
+          <h2>Criminal Litigation</h2>
+          <p className="subtle-copy">Specialist criminal litigation strategy for bail, trial defence, and rights protection.</p>
           <div className="practice-grid">{PRACTICE_AREAS.map((area) => <PracticeCard key={area.id} area={area} onOpen={() => (window.location.hash = `practice/${area.slug}`)} />)}</div>
         </div>
       </section>
 
       <section ref={bookingRef} className="section">
         <div className="container narrow">
-          <h2>Smart Consultation Intake</h2>
+          <h2>Consutation booking</h2>
           <p className="subtle-copy">Responsive intake, payment confirmation, and instant WhatsApp escalation.</p>
           <BookingEngine />
         </div>
